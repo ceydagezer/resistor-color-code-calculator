@@ -4,6 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Direnç renk kodlarını 4, 5 ve 6 bant seçenekleriyle hızlıca hesaplayın; değerden bantlara ters arama yapın." />
+  <meta name="theme-color" content="#d1272c" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ohmline" />
+  <meta property="og:title" content="Ohmline | Direnç Renk Kodu Hesaplayıcı" />
+  <meta property="og:description" content="Direnç renk kodlarını 4, 5 ve 6 bant seçenekleriyle hızlıca hesaplayın; değerden bantlara ters arama yapın." />
+  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Ohmline | Direnç Renk Kodu Hesaplayıcı" />
+  <meta name="twitter:description" content="Direnç renk kodlarını 4, 5 ve 6 bant seçenekleriyle hızlıca hesaplayın; değerden bantlara ters arama yapın." />
   <title>Ohmline | Direnç Renk Kodu Hesaplayıcı</title>
   <link rel="stylesheet" href="style.css" />
   <script>
@@ -43,8 +54,7 @@
     <div class="grid">
     <section class="card visual-card">
       <div class="section-heading">
-        <div><p class="eyebrow" data-i18n="liveEyebrow">CANLI ÖNİZLEME</p><h2 data-i18n="liveTitle">Direnç profili</h2></div>
-        <span class="live-pill"><span></span> <span data-i18n="live">canlı</span></span>
+        <div><h2 data-i18n="liveTitle">Direnç profili</h2></div>
       </div>
       <div class="tabs-row">
         <div class="tabs" role="tablist" aria-label="Bant sayısı">
@@ -78,11 +88,11 @@
         <div class="band-picker" id="bandPicker" hidden></div>
       </div>
 
-      <div class="preview-caption"><span class="caption-line"></span><small class="hint" data-i18n="previewHint">Bant renkleri seçime göre anında değişir.</small><span class="caption-line"></span></div>
       <div class="band-guide" aria-label="Seçili direnç bantları">
         <div class="guide-heading"><span data-i18n="bandGuideTitle">Bu dirençteki bantlar</span><span class="guide-mode" id="guideMode">4 BANT</span></div>
         <div class="guide-items" id="bandGuideItems"></div>
       </div>
+
     </section>
 
     <section class="card control-card">
@@ -221,18 +231,21 @@
         </div>
       </div>
 
-      <details class="legend">
-        <summary data-i18n="legendTitle">Renk Kodu Tablosu</summary>
+      <div class="share-row">
+        <button class="link-btn" id="copyLinkBtn" type="button">🔗 <span data-i18n="copyLink">Bu direnci bağlantı olarak paylaş</span></button>
+      </div>
+
+    </section>
+
+    <section class="card legend-card">
+      <details class="legend-details">
+        <summary class="section-heading">
+          <div><p class="eyebrow" data-i18n="legendEyebrow">REFERANS</p><h2 data-i18n="legendTitle">Renk Kodu Tablosu</h2></div>
+          <span class="legend-toggle" aria-hidden="true">▾</span>
+        </summary>
         <div class="legend-scroll">
           <table>
-            <thead>
-              <tr>
-                <th data-i18n="legendCol1">Renk</th>
-                <th data-i18n="legendCol2">Basamak</th>
-                <th data-i18n="legendCol3">Çarpan</th>
-                <th data-i18n="legendCol4">Tolerans</th>
-              </tr>
-            </thead>
+            <thead><tr><th data-i18n="legendCol1">Renk</th><th data-i18n="legendCol2">Basamak</th><th data-i18n="legendCol3">Çarpan</th><th data-i18n="legendCol4">Tolerans</th></tr></thead>
             <tbody id="legendBody"></tbody>
           </table>
         </div>
@@ -241,7 +254,7 @@
   </main>
 
   <footer class="container footer">
-    <small><span>OHMLINE / 2026</span> <span data-i18n="footerNote">6. bant sıcaklık katsayısını gösterir; direnç değerine eklenmez.</span></small>
+    <small><span>OHMLINE / 2026</span></small>
   </footer>
 
   <script src="script.js"></script>

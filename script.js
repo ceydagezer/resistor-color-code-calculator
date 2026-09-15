@@ -42,9 +42,7 @@ const TXT = {
     introTitleHtml: "Direncini <em>oku.</em>",
     introSubtitle: "Bant renklerini seç, direnç değerini ve tolerans aralığını saniyeler içinde gör. Ya da elindeki değeri yaz, en yakın bant kombinasyonunu biz bulalım.",
     bandSupport: "bant desteği",
-    liveEyebrow: "CANLI ÖNİZLEME",
     liveTitle: "Direnç profili",
-    live: "canlı",
     tab4: "4 Bantlı", tab5: "5 Bantlı", tab6: "6 Bantlı",
     randomize: "🎲 Rastgele",
     randomizeTitle: "Rastgele bant renkleri seç",
@@ -62,11 +60,17 @@ const TXT = {
     multiplier: "Çarpan", tolerance: "Tolerans", tempco: "Sıcaklık Katsayısı (ppm/°C)",
     resultKicker: "HESAPLANAN DEĞER",
     copy: "Kopyala", copied: "Kopyalandı", copyFailed: "Kopyalanamadı",
+    copyLink: "Bu direnci bağlantı olarak paylaş", linkCopied: "Bağlantı kopyalandı", linkCopyFailed: "Bağlantı kopyalanamadı",
     resistanceValue: "Direnç Değeri:", toleranceRange: "Tolerans Aralığı:", tempcoLabel: "Sıcaklık Katsayısı:",
     calcLabel: "Hesaplama:",
-    legendTitle: "Renk Kodu Tablosu",
+    legendTitle: "Renk Kodu Tablosu", legendEyebrow: "REFERANS",
     legendCol1: "Renk", legendCol2: "Basamak", legendCol3: "Çarpan", legendCol4: "Tolerans",
-    footerNote: "6. bant sıcaklık katsayısını gösterir; direnç değerine eklenmez.",
+    referenceOrderTitle: "Bant sırası",
+    referenceOrderText: "Soldan sağa basamak, çarpan ve tolerans okunur.",
+    referenceToleranceTitle: "Tolerans",
+    referenceToleranceText: "Altın bant çoğu standart dirençte ±5% anlamına gelir.",
+    referenceTempTitle: "6. bant",
+    referenceTempText: "Sıcaklık katsayısını, ppm/°C olarak gösterir.",
   },
   en: {
     headerNote: "Electronics workshop",
@@ -76,9 +80,7 @@ const TXT = {
     introTitleHtml: "Read your <em>resistor.</em>",
     introSubtitle: "Pick the band colors and see the resistance value and tolerance range instantly. Or type the value you have and we'll find the closest band combination.",
     bandSupport: "band support",
-    liveEyebrow: "LIVE PREVIEW",
     liveTitle: "Resistor profile",
-    live: "live",
     tab4: "4-Band", tab5: "5-Band", tab6: "6-Band",
     randomize: "🎲 Randomize",
     randomizeTitle: "Pick random band colors",
@@ -96,11 +98,17 @@ const TXT = {
     multiplier: "Multiplier", tolerance: "Tolerance", tempco: "Temp. Coefficient (ppm/°C)",
     resultKicker: "CALCULATED VALUE",
     copy: "Copy", copied: "Copied", copyFailed: "Copy failed",
+    copyLink: "Share this resistor as a link", linkCopied: "Link copied", linkCopyFailed: "Copy failed",
     resistanceValue: "Resistance Value:", toleranceRange: "Tolerance Range:", tempcoLabel: "Temp. Coefficient:",
     calcLabel: "Calculation:",
-    legendTitle: "Color Code Chart",
+    legendTitle: "Color Code Chart", legendEyebrow: "REFERENCE",
     legendCol1: "Color", legendCol2: "Digit", legendCol3: "Multiplier", legendCol4: "Tolerance",
-    footerNote: "The 6th band shows the temperature coefficient; it is not part of the resistance value.",
+    referenceOrderTitle: "Band order",
+    referenceOrderText: "Read digits, multiplier and tolerance from left to right.",
+    referenceToleranceTitle: "Tolerance",
+    referenceToleranceText: "A gold band means ±5% on most standard resistors.",
+    referenceTempTitle: "6th band",
+    referenceTempText: "Shows the temperature coefficient in ppm/°C.",
   },
 };
 
@@ -124,7 +132,8 @@ const LEGEND_ROWS = [
 // Bantları boyama + erişilebilir ipucu
 function setBandColor(bandIndex, cssToken, title) {
   const el = band(bandIndex);
-  el.className = `band band-${bandIndex}`; // sıfırla
+  // Sadece renk sınıfını değiştir; band-wide gibi diğer sınıflara dokunma
+  Array.from(el.classList).forEach(c => { if (c.startsWith("color-")) el.classList.remove(c); });
   el.classList.add(`color-${cssToken}`);
   if (title) el.title = title;
 }
@@ -140,14 +149,22 @@ function formatOhms(ohms) {
 // Bantları konumlandır (mode'a göre yüzdeler)
 function positionBands() {
   const res = $("resistor");
-  // Yüzdeler gövdenin düz (boyun) kısmına sabitlenir (~%27.6–%72.4 arası),
-  // böylece bantlar kavisli uç kısımlarına taşmaz.
+  // Gövdenin üç düz bölgesi var: sol geniş uç (~%8–%17.8), boyun (~%27.6–%72.4),
+  // sağ geniş uç (~%82.2–%92). Yüzdeler bu düz bölgelere sabitlenir, kavisli
+  // geçiş kısımlarına taşmaz. İlk bant (ve 6 bantlıda son bant) gerçek
+  // dirençlerdeki gibi geniş uç kısmına oturur.
   const percByMode = {
-    4: [33, 41, 49, 65],                  // 1,2, çarpan, [boşluk], tolerans
-    5: [32, 39, 46, 53, 66],              // 1,2,3, çarpan, [boşluk], tolerans
-    6: [31, 37, 43, 49, 59, 67],          // 1,2,3, çarpan, [boşluk], tolerans, [boşluk], tempco
+    4: [15, 34, 43, 65],                      // 1(geniş uç), 2, çarpan, [boşluk], tolerans
+    5: [15, 33, 40, 47, 66],                  // 1(geniş uç), 2,3, çarpan, [boşluk], tolerans
+    6: [15, 33, 39, 46, 64, 85],              // 1(geniş uç), 2,3, çarpan, [boşluk], tolerans(uca yakın), tempco(geniş uç)
+  };
+  const wideByMode = {
+    4: [true, false, false, false],
+    5: [true, false, false, false, false],
+    6: [true, false, false, false, false, true],
   };
   const active = percByMode[state.mode];
+  const wide = wideByMode[state.mode];
   // Hepsini önce gizle
   for (let i=1;i<=6;i++){ band(i).style.display = "none"; }
   // Kullanılacaklar:
@@ -155,6 +172,7 @@ function positionBands() {
     const el = band(idx+1);
     el.style.display = "block";
     el.style.left = `calc(${p}% - var(--band-half))`;
+    el.classList.toggle("band-wide", !!wide[idx]);
   });
 
   // Görselde core zaten var
@@ -175,8 +193,8 @@ function calculateAndRender() {
   const tolOpt = selects.tolerance.selectedOptions[0];
 
   // Bant renklerini uygula
-  setBandColor(1, d1Opt.dataset.color, `${t.d1}: ${d1Opt.value} (${COLOR_NAMES[state.lang][d1Opt.dataset.color]})`);
-  setBandColor(2, d2Opt.dataset.color, `${t.d2}: ${d2Opt.value} (${COLOR_NAMES[state.lang][d2Opt.dataset.color]})`);
+  setBandColor(1, d1Opt.dataset.color, `${t.d1}: ${COLOR_NAMES[state.lang][d1Opt.dataset.color]}`);
+  setBandColor(2, d2Opt.dataset.color, `${t.d2}: ${COLOR_NAMES[state.lang][d2Opt.dataset.color]}`);
 
   let baseDigits = 0;
   let digitsLabel = "";
@@ -185,14 +203,14 @@ function calculateAndRender() {
     // (10*d1 + d2)
     baseDigits = 10 * d1 + d2;
     digitsLabel = `${d1}${d2}`;
-    setBandColor(3, multOpt.dataset.color, `${t.multiplier}: ${multOpt.dataset.shorthand} (${COLOR_NAMES[state.lang][multOpt.dataset.color]})`);
-    setBandColor(4, tolOpt.dataset.color, `${t.tolerance}: ${tolOpt.dataset.shorthand} (${COLOR_NAMES[state.lang][tolOpt.dataset.color]})`);
+    setBandColor(3, multOpt.dataset.color, `${t.multiplier}: ${COLOR_NAMES[state.lang][multOpt.dataset.color]}`);
+    setBandColor(4, tolOpt.dataset.color, `${t.tolerance}: ${COLOR_NAMES[state.lang][tolOpt.dataset.color]}`);
   } else {
     const d3Opt = selects.d3.selectedOptions[0];
     const d3 = Number(selects.d3.value);
-    setBandColor(3, d3Opt.dataset.color, `${t.d3}: ${d3Opt.value} (${COLOR_NAMES[state.lang][d3Opt.dataset.color]})`);
-    setBandColor(4, multOpt.dataset.color, `${t.multiplier}: ${multOpt.dataset.shorthand} (${COLOR_NAMES[state.lang][multOpt.dataset.color]})`);
-    setBandColor(5, tolOpt.dataset.color, `${t.tolerance}: ${tolOpt.dataset.shorthand} (${COLOR_NAMES[state.lang][tolOpt.dataset.color]})`);
+    setBandColor(3, d3Opt.dataset.color, `${t.d3}: ${COLOR_NAMES[state.lang][d3Opt.dataset.color]}`);
+    setBandColor(4, multOpt.dataset.color, `${t.multiplier}: ${COLOR_NAMES[state.lang][multOpt.dataset.color]}`);
+    setBandColor(5, tolOpt.dataset.color, `${t.tolerance}: ${COLOR_NAMES[state.lang][tolOpt.dataset.color]}`);
 
     // (100*d1 + 10*d2 + d3)
     baseDigits = 100 * d1 + 10 * d2 + d3;
@@ -202,7 +220,7 @@ function calculateAndRender() {
       const tempcoOpt = selects.tempco.selectedOptions[0];
       const tempcoTitle = tempcoOpt.value === "-"
         ? `${t.tempco}: —`
-        : `${t.tempco}: ${COLOR_NAMES[state.lang][tempcoOpt.dataset.color]} (${tempcoOpt.dataset.ppm} ppm/°C)`;
+        : `${t.tempco}: ${COLOR_NAMES[state.lang][tempcoOpt.dataset.color]}`;
       setBandColor(6, tempcoOpt.dataset.color, tempcoTitle);
     }
   }
@@ -223,6 +241,9 @@ function calculateAndRender() {
   } else {
     out.tempcoLine.style.display = "none";
   }
+
+  saveState();
+  updateUrl();
 }
 
 function renderBandGuide() {
@@ -230,11 +251,12 @@ function renderBandGuide() {
   if (!guide) return;
   const t = TXT[state.lang];
   const roles = roleByMode[state.mode] || [];
+  const tempcoLabel = t.tempco.replace("(ppm/°C)", '<span class="nowrap">(ppm/°C)</span>');
   const labels = state.mode === 4
     ? [t.d1, t.d2, t.multiplier, t.tolerance]
     : state.mode === 5
       ? [t.d1, t.d2, t.d3, t.multiplier, t.tolerance]
-      : [t.d1, t.d2, t.d3, t.multiplier, t.tolerance, t.tempco];
+      : [t.d1, t.d2, t.d3, t.multiplier, t.tolerance, tempcoLabel];
 
   guide.innerHTML = roles.map((role, index) => {
     const option = selects[role].selectedOptions[0];
@@ -244,20 +266,21 @@ function renderBandGuide() {
   $("guideMode").textContent = `${state.mode} ${state.lang === "tr" ? "BANT" : "BANDS"}`;
 }
 
-// Sekme (tab) değişimi
-function setMode(newMode) {
-  state.mode = newMode;
-
-  // Sekme görünümü
+// Sekme görünümünü (aktif tab + gizli alanlar) verilen moda göre günceller
+function applyModeUI(mode) {
   document.querySelectorAll(".tab").forEach(btn=>{
-    const active = Number(btn.dataset.mode) === newMode;
+    const active = Number(btn.dataset.mode) === mode;
     btn.classList.toggle("active", active);
     btn.setAttribute("aria-selected", String(active));
   });
+  wrappers.d3.classList.toggle("hidden", mode === 4);
+  wrappers.tempco.classList.toggle("hidden", mode !== 6);
+}
 
-  // Form alanlarını görünürlük
-  wrappers.d3.classList.toggle("hidden", newMode === 4);
-  wrappers.tempco.classList.toggle("hidden", newMode !== 6);
+// Sekme (tab) değişimi
+function setMode(newMode) {
+  state.mode = newMode;
+  applyModeUI(newMode);
 
   // Bantları konumlandır + hesapla
   positionBands();
@@ -545,7 +568,92 @@ document.addEventListener("keydown", (e) => {
 });
 window.addEventListener("resize", closeBandPicker);
 
+// ---- Son seçimi hatırlama (localStorage) ----
+function saveState() {
+  try {
+    localStorage.setItem("ohmline-state", JSON.stringify({
+      mode: state.mode,
+      d1: selects.d1.value,
+      d2: selects.d2.value,
+      d3: selects.d3.value,
+      multiplier: selects.multiplier.value,
+      tolerance: selects.tolerance.value,
+      tempco: selects.tempco.value,
+    }));
+  } catch (e) {}
+}
+
+function restoreState() {
+  try {
+    const raw = localStorage.getItem("ohmline-state");
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (![4, 5, 6].includes(s.mode)) return false;
+    state.mode = s.mode;
+    if (s.d1) selects.d1.value = s.d1;
+    if (s.d2) selects.d2.value = s.d2;
+    if (s.d3) selects.d3.value = s.d3;
+    if (s.multiplier) selects.multiplier.value = s.multiplier;
+    if (s.tolerance) selects.tolerance.value = s.tolerance;
+    if (s.tempco) selects.tempco.value = s.tempco;
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// ---- Durumu URL'de paylaşılabilir tut ----
+function updateUrl() {
+  try {
+    const p = new URLSearchParams();
+    p.set("m", state.mode);
+    p.set("d1", selects.d1.value);
+    p.set("d2", selects.d2.value);
+    if (state.mode !== 4) p.set("d3", selects.d3.value);
+    p.set("x", selects.multiplier.value);
+    p.set("t", selects.tolerance.value);
+    if (state.mode === 6) p.set("tc", selects.tempco.value);
+    history.replaceState(null, "", `${location.pathname}?${p.toString()}`);
+  } catch (e) {}
+}
+
+function readStateFromUrl() {
+  const p = new URLSearchParams(location.search);
+  if (!p.has("m")) return false;
+  const m = Number(p.get("m"));
+  if (![4, 5, 6].includes(m)) return false;
+  state.mode = m;
+  if (p.has("d1")) selects.d1.value = p.get("d1");
+  if (p.has("d2")) selects.d2.value = p.get("d2");
+  if (p.has("d3")) selects.d3.value = p.get("d3");
+  if (p.has("x")) selects.multiplier.value = p.get("x");
+  if (p.has("t")) selects.tolerance.value = p.get("t");
+  if (p.has("tc")) selects.tempco.value = p.get("tc");
+  return true;
+}
+
+// ---- Bağlantıyı kopyala ----
+const copyLinkBtn = $("copyLinkBtn");
+copyLinkBtn.addEventListener("click", async () => {
+  const t = TXT[state.lang];
+  let ok = true;
+  try {
+    await navigator.clipboard.writeText(location.href);
+  } catch (e) {
+    ok = false;
+  }
+  const labelSpan = copyLinkBtn.querySelector("span");
+  labelSpan.textContent = ok ? t.linkCopied : t.linkCopyFailed;
+  copyLinkBtn.classList.toggle("copied", ok);
+  setTimeout(() => {
+    labelSpan.textContent = TXT[state.lang].copyLink;
+    copyLinkBtn.classList.remove("copied");
+  }, 1800);
+});
+
 // İlk kurulum
 const savedLang = localStorage.getItem("ohmline-lang") || "tr";
+if (!readStateFromUrl()) restoreState();
+applyModeUI(state.mode);
 positionBands();
 applyLanguage(savedLang);

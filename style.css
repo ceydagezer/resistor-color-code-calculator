@@ -35,7 +35,6 @@ body{
 .brand-mark{display:grid;place-items:center;width:28px;height:28px;background:var(--accent);color:var(--accent-ink);font-size:17px;border-radius:6px}
 .header-right{display:flex;align-items:center;gap:16px}
 .header-note{color:#aeb4bd;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
-.status-dot,.live-pill span:first-child{display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%;margin-right:7px}
 
 .lang-switch{display:flex;border:1px solid #33383f;border-radius:6px;overflow:hidden}
 .lang-btn{padding:7px 11px;border:0;background:transparent;color:#aeb4bd;font:inherit;font-size:12px;font-weight:700;letter-spacing:.4px;cursor:pointer;transition:.15s}
@@ -55,16 +54,35 @@ body{
 .subtitle{color:var(--muted);margin:18px 0 0;max-width:500px;line-height:1.6}
 .intro-meta{display:flex;flex-direction:column;text-align:right;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px}
 .intro-meta strong{font-size:24px;color:var(--fg);letter-spacing:-1px}
-.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:var(--gap);align-items:start}
+.grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:var(--gap);align-items:stretch}
+.grid > .card{min-width:0}
 @media (max-width:860px){.grid{grid-template-columns:1fr}.intro{padding:44px 0 30px;flex-direction:column;align-items:start}.intro-meta{flex-direction:row;gap:8px;align-items:baseline}}
 
+.quick-reference{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reference-item{display:flex;gap:14px;padding:16px 22px 16px 0;border-right:1px solid var(--line)}
+.reference-item:not(:first-child){padding-left:22px}.reference-item:last-child{border-right:0}
+.reference-number{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:1px;padding-top:2px}.reference-item strong{display:block;font-size:12px;color:var(--fg)}.reference-item p{margin:7px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+@media (max-width:860px){.quick-reference{grid-template-columns:1fr}.reference-item,.reference-item:not(:first-child){padding:15px 0;border-right:0;border-bottom:1px solid var(--line)}.reference-item:last-child{border-bottom:0}}
+
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-.visual-card{height:max-content}
+.visual-card{display:block}
+.legend-card{grid-column:1 / -1;min-width:0}
+.legend-details summary{cursor:pointer;list-style:none}
+.legend-details summary::-webkit-details-marker{display:none}
+.legend-details summary.section-heading{align-items:center}
+.legend-details:not([open]) summary{margin-bottom:0}
+.legend-toggle{
+  flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  display:grid;place-items:center;font-size:15px;line-height:1;
+  transition:transform .15s,color .15s,border-color .15s;
+}
+.legend-details summary:hover .legend-toggle{border-color:var(--accent);color:var(--accent)}
+.legend-details[open] .legend-toggle{transform:rotate(180deg)}
 .section-heading{display:flex;align-items:start;justify-content:space-between;margin-bottom:20px;gap:12px;padding-left:12px;border-left:3px solid var(--accent)}
 .section-heading h2{font-size:20px;letter-spacing:-.5px;margin:0}
 .section-heading .eyebrow{margin-bottom:6px}
 .step-count{color:var(--muted);font-size:11px;letter-spacing:1px;white-space:nowrap}
-.live-pill{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;display:flex;align-items:center}
 .hint{color:var(--muted)}
 
 .tabs-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;flex-wrap:wrap}
@@ -102,24 +120,27 @@ select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(209,39,44,.14)
 .result-line:last-child{border-bottom:0}
 .result-line strong{font-size:15px;color:var(--fg);text-align:right}
 
+.share-row{margin-top:12px;text-align:right}
+.link-btn{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 2px;transition:color .15s}
+.link-btn:hover{color:var(--accent)}
+.link-btn.copied{color:var(--accent)}
+
 /* Renk kodu tablosu */
-.legend{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
-.legend summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.5px;list-style:none}
-.legend summary::-webkit-details-marker{display:none}
-.legend summary::before{content:"▸ ";display:inline-block}
-.legend[open] summary::before{content:"▾ "}
-.legend-scroll{overflow-x:auto;margin-top:12px}
-.legend table{width:100%;border-collapse:collapse;font-size:12px}
-.legend th{text-align:left;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-size:10px;padding:6px 8px;border-bottom:1px solid var(--line)}
-.legend td{padding:7px 8px;border-bottom:1px solid var(--line);color:var(--fg);white-space:nowrap}
-.legend tr:last-child td{border-bottom:0}
-.swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;border:1px solid rgba(0,0,0,.2);vertical-align:middle}
+.legend-scroll{overflow-x:auto;margin-top:4px}
+.legend-card table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
+.legend-card th{color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-size:11px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.legend-card td{padding:13px 16px;border-bottom:1px solid var(--line);color:var(--fg)}
+.legend-card tr:last-child td{border-bottom:0}
+.legend-card tr:nth-child(even) td{background:var(--surface)}
+.legend-card th:first-child,.legend-card td:first-child{width:34%;text-align:left}
+.legend-card th:not(:first-child),.legend-card td:not(:first-child){width:22%;text-align:center}
+.swatch{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:9px;border:1px solid rgba(0,0,0,.2);vertical-align:middle}
 
 .footer{color:var(--muted);padding-top:26px;padding-bottom:26px;font-size:11px}
-.footer span:first-child{color:var(--accent);margin-right:14px;letter-spacing:1px;font-weight:700}
+.footer span:first-child{color:var(--accent);letter-spacing:1px;font-weight:700}
 
 /* Direnç gövdesi — düz (flat) tasarım */
-.resistor-stage{position:relative;margin:14px auto 8px;padding:22px 0 26px}
+.resistor-stage{position:relative;margin:14px auto 4px;padding:24px 0 20px}
 .resistor-stage::after{
   content:"";position:absolute;left:50%;bottom:4px;width:60%;height:14px;
   background:radial-gradient(ellipse at center, rgba(0,0,0,.14) 0%, rgba(0,0,0,0) 75%);
@@ -145,6 +166,7 @@ select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(209,39,44,.14)
   width:var(--band-width);height:56px;border-radius:1px;border:1px solid rgba(0,0,0,.22);
   z-index:1;cursor:pointer;transition:filter .12s,transform .12s;
 }
+.band.band-wide{height:86px}
 .band:hover{filter:brightness(1.12)}
 .band:active{transform:translateY(-50%) scale(.94)}
 .band:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -167,14 +189,21 @@ select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(209,39,44,.14)
 .preview-caption{display:flex;align-items:center;gap:12px;justify-content:center}
 .caption-line{height:1px;background:var(--line);flex:1}
 
-.band-guide{margin-top:20px;padding-top:15px;border-top:1px solid var(--line)}
+.band-guide{margin-top:8px;padding-top:15px;border-top:1px solid var(--line)}
 .guide-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase}
 .guide-mode{color:var(--accent);font-size:9px}
-.guide-items{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.guide-item{display:flex;align-items:center;gap:6px;min-width:0;padding:8px 7px;background:var(--surface);border:1px solid var(--line);border-radius:5px}
-.guide-swatch{flex:0 0 9px;width:9px;height:28px;border-radius:2px;border:1px solid rgba(0,0,0,.2)}
-.guide-index{color:var(--muted);font-size:10px;font-weight:700}
-.guide-label{display:flex;flex-direction:column;min-width:0;line-height:1.2}.guide-label strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg);font-size:10px}.guide-label small{margin-top:3px;color:var(--muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.guide-items{display:flex;flex-direction:column;gap:8px}
+.guide-item{display:flex;align-items:center;gap:12px;min-width:0;padding:11px 14px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.guide-swatch{flex:0 0 10px;width:10px;align-self:stretch;border-radius:2px;border:1px solid rgba(0,0,0,.2)}
+.guide-index{
+  flex:0 0 auto;width:20px;height:20px;border-radius:50%;
+  background:var(--card);border:1px solid var(--line);color:var(--muted);
+  font-size:10px;font-weight:700;display:grid;place-items:center;
+}
+.guide-label{flex:1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.guide-label strong{color:var(--fg);font-size:13px;font-weight:600;white-space:normal;overflow-wrap:break-word}
+.guide-label strong .nowrap{white-space:nowrap}
+.guide-label small{flex:0 0 auto;color:var(--muted);font-size:12px;white-space:nowrap}
 
 /* Bant üzerinden renk seçici (popover) */
 .band-picker{
@@ -204,8 +233,8 @@ select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(209,39,44,.14)
   .resistor{height:92px}
   .resistor .core-bg{height:82px}
   .band{width:15px;height:44px}
+  .band.band-wide{height:68px}
   :root{--band-half:7.5px}
-  .guide-items{grid-template-columns:repeat(2,1fr)}
   .intro h1{letter-spacing:-1.5px}
   .reverse-row{flex-wrap:wrap}
   .reverse-row input{flex:1 1 100%}
