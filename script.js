@@ -65,12 +65,6 @@ const TXT = {
     calcLabel: "Hesaplama:",
     legendTitle: "Renk Kodu Tablosu", legendEyebrow: "REFERANS",
     legendCol1: "Renk", legendCol2: "Basamak", legendCol3: "Çarpan", legendCol4: "Tolerans",
-    referenceOrderTitle: "Bant sırası",
-    referenceOrderText: "Soldan sağa basamak, çarpan ve tolerans okunur.",
-    referenceToleranceTitle: "Tolerans",
-    referenceToleranceText: "Altın bant çoğu standart dirençte ±5% anlamına gelir.",
-    referenceTempTitle: "6. bant",
-    referenceTempText: "Sıcaklık katsayısını, ppm/°C olarak gösterir.",
   },
   en: {
     headerNote: "Electronics workshop",
@@ -103,12 +97,6 @@ const TXT = {
     calcLabel: "Calculation:",
     legendTitle: "Color Code Chart", legendEyebrow: "REFERENCE",
     legendCol1: "Color", legendCol2: "Digit", legendCol3: "Multiplier", legendCol4: "Tolerance",
-    referenceOrderTitle: "Band order",
-    referenceOrderText: "Read digits, multiplier and tolerance from left to right.",
-    referenceToleranceTitle: "Tolerance",
-    referenceToleranceText: "A gold band means ±5% on most standard resistors.",
-    referenceTempTitle: "6th band",
-    referenceTempText: "Shows the temperature coefficient in ppm/°C.",
   },
 };
 

@@ -58,12 +58,6 @@ body{
 .grid > .card{min-width:0}
 @media (max-width:860px){.grid{grid-template-columns:1fr}.intro{padding:44px 0 30px;flex-direction:column;align-items:start}.intro-meta{flex-direction:row;gap:8px;align-items:baseline}}
 
-.quick-reference{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.reference-item{display:flex;gap:14px;padding:16px 22px 16px 0;border-right:1px solid var(--line)}
-.reference-item:not(:first-child){padding-left:22px}.reference-item:last-child{border-right:0}
-.reference-number{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:1px;padding-top:2px}.reference-item strong{display:block;font-size:12px;color:var(--fg)}.reference-item p{margin:7px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
-@media (max-width:860px){.quick-reference{grid-template-columns:1fr}.reference-item,.reference-item:not(:first-child){padding:15px 0;border-right:0;border-bottom:1px solid var(--line)}.reference-item:last-child{border-bottom:0}}
-
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
 .visual-card{display:block}
 .legend-card{grid-column:1 / -1;min-width:0}
