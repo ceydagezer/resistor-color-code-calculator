@@ -3,44 +3,108 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Direnç Hesaplama (4/5/6 Bant)</title>
+  <meta name="description" content="Direnç renk kodlarını 4, 5 ve 6 bant seçenekleriyle hızlıca hesaplayın; değerden bantlara ters arama yapın." />
+  <title>Ohmline | Direnç Renk Kodu Hesaplayıcı</title>
   <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("ohmline-theme");
+        var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
-  <header class="container">
-    <h1>Direnç Hesaplama</h1>
-    <p class="subtitle">Renk seç → değer ve tolerans otomatik hesaplansın (4/5/6 bant)</p>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="." aria-label="Ohmline"><span class="brand-mark">Ω</span><span>ohmline</span></a>
+      <div class="header-right">
+        <div class="header-note" data-i18n="headerNote">Elektronik atölyesi</div>
+        <div class="lang-switch" role="group" aria-label="Dil / Language">
+          <button class="lang-btn active" data-lang="tr" type="button">TR</button>
+          <button class="lang-btn" data-lang="en" type="button">EN</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Temayı değiştir">🌙</button>
+      </div>
+    </div>
   </header>
 
-  <main class="container grid">
-    <!-- Sol: Görsel -->
-    <section class="card">
-      <div class="tabs" role="tablist" aria-label="Bant sayısı">
-        <button class="tab active" data-mode="4" aria-selected="true">4 Bantlı</button>
-        <button class="tab" data-mode="5" aria-selected="false">5 Bantlı</button>
-        <button class="tab" data-mode="6" aria-selected="false">6 Bantlı</button>
+  <main class="container">
+    <section class="intro">
+      <div>
+        <p class="eyebrow" data-i18n="introEyebrow">RENK KODU HESAPLAYICI</p>
+        <h1 data-i18n="introTitleHtml">Direncini <em>oku.</em></h1>
+        <p class="subtitle" data-i18n="introSubtitle">Bant renklerini seç, direnç değerini ve tolerans aralığını saniyeler içinde gör. Ya da elindeki değeri yaz, en yakın bant kombinasyonunu biz bulalım.</p>
+      </div>
+      <div class="intro-meta"><strong>4 / 5 / 6</strong><span data-i18n="bandSupport">bant desteği</span></div>
+    </section>
+    <div class="grid">
+    <section class="card visual-card">
+      <div class="section-heading">
+        <div><p class="eyebrow" data-i18n="liveEyebrow">CANLI ÖNİZLEME</p><h2 data-i18n="liveTitle">Direnç profili</h2></div>
+        <span class="live-pill"><span></span> <span data-i18n="live">canlı</span></span>
+      </div>
+      <div class="tabs-row">
+        <div class="tabs" role="tablist" aria-label="Bant sayısı">
+          <button class="tab active" data-mode="4" aria-selected="true" data-i18n="tab4">4 Bantlı</button>
+          <button class="tab" data-mode="5" aria-selected="false" data-i18n="tab5">5 Bantlı</button>
+          <button class="tab" data-mode="6" aria-selected="false" data-i18n="tab6">6 Bantlı</button>
+        </div>
+        <button class="dice-btn" id="randomizeBtn" type="button" data-i18n="randomize" data-i18n-title="randomizeTitle" title="Rastgele bant renkleri seç">🎲 Rastgele</button>
       </div>
 
-      <div class="resistor" id="resistor" aria-label="Direnç görseli">
-        <div class="core-bg"></div>
-        <div class="band band-1" id="band1"></div>
-        <div class="band band-2" id="band2"></div>
-        <div class="band band-3" id="band3"></div>
-        <div class="band band-4" id="band4"></div>
-        <div class="band band-5" id="band5"></div>
-        <div class="band band-6" id="band6"></div>
+      <div class="resistor-stage">
+        <div class="resistor" id="resistor" aria-label="Direnç görseli">
+          <svg class="core-bg" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="ceramicBody" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f7f7fa" />
+                <stop offset="0.5" stop-color="#e7e5ea" />
+                <stop offset="1" stop-color="#d9d7dd" />
+              </linearGradient>
+            </defs>
+            <path class="core-shape" d="M14,10 L70,10 C108,10 108,26 140,26 L460,26 C492,26 492,10 530,10 L586,10 A14,14 0 0 1 600,24 L600,96 A14,14 0 0 1 586,110 L530,110 C492,110 492,94 460,94 L140,94 C108,94 108,110 70,110 L14,110 A14,14 0 0 1 0,96 L0,24 A14,14 0 0 1 14,10 Z" />
+            <path class="core-highlight" d="M18,18 L70,18 C108,18 112,33 142,33 L458,33 C488,33 492,18 530,18 L582,18" />
+          </svg>
+          <div class="band band-1" id="band1" tabindex="0" role="button" aria-haspopup="true"></div>
+          <div class="band band-2" id="band2" tabindex="0" role="button" aria-haspopup="true"></div>
+          <div class="band band-3" id="band3" tabindex="0" role="button" aria-haspopup="true"></div>
+          <div class="band band-4" id="band4" tabindex="0" role="button" aria-haspopup="true"></div>
+          <div class="band band-5" id="band5" tabindex="0" role="button" aria-haspopup="true"></div>
+          <div class="band band-6" id="band6" tabindex="0" role="button" aria-haspopup="true"></div>
+        </div>
+        <div class="band-picker" id="bandPicker" hidden></div>
       </div>
 
-      <small class="hint">Bant renkleri seçime göre anında değişir.</small>
+      <div class="preview-caption"><span class="caption-line"></span><small class="hint" data-i18n="previewHint">Bant renkleri seçime göre anında değişir.</small><span class="caption-line"></span></div>
+      <div class="band-guide" aria-label="Seçili direnç bantları">
+        <div class="guide-heading"><span data-i18n="bandGuideTitle">Bu dirençteki bantlar</span><span class="guide-mode" id="guideMode">4 BANT</span></div>
+        <div class="guide-items" id="bandGuideItems"></div>
+      </div>
     </section>
 
-    <!-- Sağ: Seçimler + Sonuç -->
-    <section class="card">
-      <h2 class="card-title">Seçimler</h2>
+    <section class="card control-card">
+      <div class="section-heading"><div><p class="eyebrow" data-i18n="stepEyebrow">ADIM 01</p><h2 data-i18n="stepTitle">Renkleri seç</h2></div><span class="step-count">01 — 03</span></div>
+
+      <div class="reverse-lookup">
+        <label class="reverse-label" for="targetValue" data-i18n="reverseLabel">Ters arama — değerden bantlara</label>
+        <div class="reverse-row">
+          <input type="number" id="targetValue" inputmode="decimal" min="0" step="any" data-i18n-placeholder="reversePlaceholder" placeholder="Örn. 4.7" aria-label="Hedef direnç değeri" />
+          <select id="targetUnit" aria-label="Birim">
+            <option value="1">Ω</option>
+            <option value="1000" selected>kΩ</option>
+            <option value="1000000">MΩ</option>
+          </select>
+          <button type="button" id="reverseBtn" data-i18n="reverseFind">Bul</button>
+        </div>
+        <small class="reverse-note" id="reverseNote"></small>
+      </div>
 
       <div class="controls">
         <label>
-          1. Basamak
+          <span data-i18n="d1">1. Basamak</span>
           <select id="d1">
             <option value="0" data-color="black">0 - Siyah</option>
             <option value="1" data-color="brown" selected>1 - Kahverengi</option>
@@ -56,7 +120,7 @@
         </label>
 
         <label>
-          2. Basamak
+          <span data-i18n="d2">2. Basamak</span>
           <select id="d2">
             <option value="0" data-color="black">0 - Siyah</option>
             <option value="1" data-color="brown">1 - Kahverengi</option>
@@ -73,7 +137,7 @@
 
         <!-- 5/6 bant için üçüncü basamak -->
         <label id="d3-wrap" class="hidden">
-          3. Basamak
+          <span data-i18n="d3">3. Basamak</span>
           <select id="d3">
             <option value="0" data-color="black" selected>0 - Siyah</option>
             <option value="1" data-color="brown">1 - Kahverengi</option>
@@ -89,73 +153,95 @@
         </label>
 
         <label>
-          Çarpan
+          <span data-i18n="multiplier">Çarpan</span>
           <select id="multiplier">
-            <option value="0.01" data-color="silver">×0.01 - Gümüş</option>
-            <option value="0.1"  data-color="gold">×0.1 - Altın</option>
-            <option value="1"    data-color="black">×1 - Siyah</option>
-            <option value="10"   data-color="brown">×10 - Kahverengi</option>
-            <option value="100"  data-color="red" selected>×100 - Kırmızı</option>
-            <option value="1000" data-color="orange">×1k - Turuncu</option>
-            <option value="10000" data-color="yellow">×10k - Sarı</option>
-            <option value="100000" data-color="green">×100k - Yeşil</option>
-            <option value="1000000" data-color="blue">×1M - Mavi</option>
-            <option value="10000000" data-color="violet">×10M - Mor</option>
-            <option value="100000000" data-color="gray">×100M - Gri</option>
-            <option value="1000000000" data-color="white">×1G - Beyaz</option>
+            <option value="0.01" data-color="silver" data-shorthand="×0.01">×0.01 - Gümüş</option>
+            <option value="0.1"  data-color="gold" data-shorthand="×0.1">×0.1 - Altın</option>
+            <option value="1"    data-color="black" data-shorthand="×1">×1 - Siyah</option>
+            <option value="10"   data-color="brown" data-shorthand="×10">×10 - Kahverengi</option>
+            <option value="100"  data-color="red" data-shorthand="×100" selected>×100 - Kırmızı</option>
+            <option value="1000" data-color="orange" data-shorthand="×1k">×1k - Turuncu</option>
+            <option value="10000" data-color="yellow" data-shorthand="×10k">×10k - Sarı</option>
+            <option value="100000" data-color="green" data-shorthand="×100k">×100k - Yeşil</option>
+            <option value="1000000" data-color="blue" data-shorthand="×1M">×1M - Mavi</option>
+            <option value="10000000" data-color="violet" data-shorthand="×10M">×10M - Mor</option>
+            <option value="100000000" data-color="gray" data-shorthand="×100M">×100M - Gri</option>
+            <option value="1000000000" data-color="white" data-shorthand="×1G">×1G - Beyaz</option>
           </select>
         </label>
 
         <label>
-          Tolerans
+          <span data-i18n="tolerance">Tolerans</span>
           <select id="tolerance">
-            <option value="20" data-color="none">±20% - (Yok)</option>
-            <option value="10" data-color="silver">±10% - Gümüş</option>
-            <option value="5"  data-color="gold" selected>±5% - Altın</option>
-            <option value="2"  data-color="red">±2% - Kırmızı</option>
-            <option value="1"  data-color="brown">±1% - Kahverengi</option>
-            <option value="0.5" data-color="green">±0.5% - Yeşil</option>
-            <option value="0.25" data-color="blue">±0.25% - Mavi</option>
-            <option value="0.1" data-color="violet">±0.1% - Mor</option>
-            <option value="0.05" data-color="gray">±0.05% - Gri</option>
+            <option value="20" data-color="none" data-shorthand="±20%">±20% - (Yok)</option>
+            <option value="10" data-color="silver" data-shorthand="±10%">±10% - Gümüş</option>
+            <option value="5"  data-color="gold" data-shorthand="±5%" selected>±5% - Altın</option>
+            <option value="2"  data-color="red" data-shorthand="±2%">±2% - Kırmızı</option>
+            <option value="1"  data-color="brown" data-shorthand="±1%">±1% - Kahverengi</option>
+            <option value="0.5" data-color="green" data-shorthand="±0.5%">±0.5% - Yeşil</option>
+            <option value="0.25" data-color="blue" data-shorthand="±0.25%">±0.25% - Mavi</option>
+            <option value="0.1" data-color="violet" data-shorthand="±0.1%">±0.1% - Mor</option>
+            <option value="0.05" data-color="gray" data-shorthand="±0.05%">±0.05% - Gri</option>
           </select>
         </label>
 
         <!-- 6 bant için sıcaklık katsayısı (gösterim amaçlı) -->
         <label id="tempco-wrap" class="hidden">
-          Sıcaklık Katsayısı (ppm/°C)
+          <span data-i18n="tempco">Sıcaklık Katsayısı (ppm/°C)</span>
           <select id="tempco">
             <option value="-" data-color="black">—</option>
-            <option value="250 ppm/°C" data-color="black">Siyah — 250</option>
-            <option value="100 ppm/°C" data-color="brown">Kahverengi — 100</option>
-            <option value="50 ppm/°C"  data-color="red">Kırmızı — 50</option>
-            <option value="25 ppm/°C"  data-color="yellow">Sarı — 25</option>
-            <option value="20 ppm/°C"  data-color="green">Yeşil — 20</option>
-            <option value="10 ppm/°C"  data-color="blue">Mavi — 10</option>
-            <option value="5 ppm/°C"   data-color="violet">Mor — 5</option>
+            <option value="250 ppm/°C" data-color="black" data-ppm="250">Siyah — 250</option>
+            <option value="100 ppm/°C" data-color="brown" data-ppm="100">Kahverengi — 100</option>
+            <option value="50 ppm/°C"  data-color="red" data-ppm="50">Kırmızı — 50</option>
+            <option value="25 ppm/°C"  data-color="yellow" data-ppm="25">Sarı — 25</option>
+            <option value="20 ppm/°C"  data-color="green" data-ppm="20">Yeşil — 20</option>
+            <option value="10 ppm/°C"  data-color="blue" data-ppm="10">Mavi — 10</option>
+            <option value="5 ppm/°C"   data-color="violet" data-ppm="5">Mor — 5</option>
           </select>
         </label>
       </div>
 
-      <div class="results">
+      <div class="results" aria-live="polite">
+        <div class="result-kicker"><span data-i18n="resultKicker">HESAPLANAN DEĞER</span><button class="copy-btn" id="copyBtn" type="button" data-i18n="copy">Kopyala</button></div>
         <div class="result-line">
-          <span>Direnç Değeri:</span>
+          <span data-i18n="resistanceValue">Direnç Değeri:</span>
           <strong id="valueText">–</strong>
         </div>
         <div class="result-line">
-          <span>Tolerans Aralığı:</span>
+          <span data-i18n="toleranceRange">Tolerans Aralığı:</span>
           <strong id="rangeText">–</strong>
         </div>
+        <div class="result-line">
+          <span data-i18n="calcLabel">Hesaplama:</span>
+          <strong id="calcText">–</strong>
+        </div>
         <div class="result-line" id="tempcoLine" style="display:none">
-          <span>Sıcaklık Katsayısı:</span>
+          <span data-i18n="tempcoLabel">Sıcaklık Katsayısı:</span>
           <strong id="tempcoText">–</strong>
         </div>
       </div>
-    </section>
+
+      <details class="legend">
+        <summary data-i18n="legendTitle">Renk Kodu Tablosu</summary>
+        <div class="legend-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="legendCol1">Renk</th>
+                <th data-i18n="legendCol2">Basamak</th>
+                <th data-i18n="legendCol3">Çarpan</th>
+                <th data-i18n="legendCol4">Tolerans</th>
+              </tr>
+            </thead>
+            <tbody id="legendBody"></tbody>
+          </table>
+        </div>
+      </details>
+    </section></div>
   </main>
 
   <footer class="container footer">
-    <small>Not: 6. bant (sıcaklık katsayısı) yalnızca bilgi içindir; değere eklenmez.</small>
+    <small><span>OHMLINE / 2026</span> <span data-i18n="footerNote">6. bant sıcaklık katsayısını gösterir; direnç değerine eklenmez.</span></small>
   </footer>
 
   <script src="script.js"></script>

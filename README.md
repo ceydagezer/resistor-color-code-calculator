@@ -9,9 +9,15 @@ The project was developed using **HTML, CSS, and JavaScript** as part of my earl
 
 ## ✨ Features
 
-- Supports both **4-band** and **5-band** resistors
+- Supports **4-band**, **5-band**, and **6-band** resistors
 - Displays the selected color bands visually on the resistor
-- Calculates the resistance value instantly
+- Calculates the resistance value and tolerance range instantly
+- Reverse lookup: enter a target resistance and get the closest matching band colors
+- One-click copy of the calculated value
+- Randomize button to preview a random band combination
+- Light/dark theme toggle (remembers your choice)
+- Turkish / English language toggle
+- Built-in resistor color code reference chart
 - Provides a simple and interactive user interface
 - Runs directly in the browser without requiring a backend
 
