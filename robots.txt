@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ceydagezer.github.io/resistor-color-code-calculator/sitemap.xml

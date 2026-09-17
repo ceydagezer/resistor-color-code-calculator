@@ -35,6 +35,8 @@ const COLOR_NAMES = {
 // ---- Arayüz metinleri (dil bazlı) ----
 const TXT = {
   tr: {
+    pageTitle: "Ohmline | Direnç Renk Kodu Hesaplayıcı",
+    metaDescription: "Direnç renk kodlarını 4, 5 ve 6 bant seçenekleriyle hızlıca hesaplayın; değerden bantlara ters arama yapın.",
     headerNote: "Elektronik atölyesi",
     themeToLight: "Açık temaya geç",
     themeToDark: "Koyu temaya geç",
@@ -46,7 +48,6 @@ const TXT = {
     tab4: "4 Bantlı", tab5: "5 Bantlı", tab6: "6 Bantlı",
     randomize: "🎲 Rastgele",
     randomizeTitle: "Rastgele bant renkleri seç",
-    previewHint: "Bant renkleri seçime göre anında değişir.",
     bandGuideTitle: "Bu dirençteki bantlar",
     stepEyebrow: "ADIM 01",
     stepTitle: "Renkleri seç",
@@ -67,6 +68,8 @@ const TXT = {
     legendCol1: "Renk", legendCol2: "Basamak", legendCol3: "Çarpan", legendCol4: "Tolerans",
   },
   en: {
+    pageTitle: "Ohmline | Resistor Color Code Calculator",
+    metaDescription: "Quickly calculate resistor color codes with 4, 5, and 6-band options; reverse-lookup from a value to bands.",
     headerNote: "Electronics workshop",
     themeToLight: "Switch to light theme",
     themeToDark: "Switch to dark theme",
@@ -78,7 +81,6 @@ const TXT = {
     tab4: "4-Band", tab5: "5-Band", tab6: "6-Band",
     randomize: "🎲 Randomize",
     randomizeTitle: "Pick random band colors",
-    previewHint: "Band colors update instantly as you choose.",
     bandGuideTitle: "Bands on this resistor",
     stepEyebrow: "STEP 01",
     stepTitle: "Choose the colors",
@@ -445,6 +447,20 @@ function applyLanguage(lang) {
   state.lang = lang;
   document.documentElement.lang = lang;
   localStorage.setItem("ohmline-lang", lang);
+
+  document.title = TXT[lang].pageTitle;
+  const metaDescEl = document.querySelector('meta[name="description"]');
+  if (metaDescEl) metaDescEl.setAttribute("content", TXT[lang].metaDescription);
+  const ogTitleEl = document.querySelector('meta[property="og:title"]');
+  if (ogTitleEl) ogTitleEl.setAttribute("content", TXT[lang].pageTitle);
+  const ogDescEl = document.querySelector('meta[property="og:description"]');
+  if (ogDescEl) ogDescEl.setAttribute("content", TXT[lang].metaDescription);
+  const twTitleEl = document.querySelector('meta[name="twitter:title"]');
+  if (twTitleEl) twTitleEl.setAttribute("content", TXT[lang].pageTitle);
+  const twDescEl = document.querySelector('meta[name="twitter:description"]');
+  if (twDescEl) twDescEl.setAttribute("content", TXT[lang].metaDescription);
+  const ogLocaleEl = document.querySelector('meta[property="og:locale"]');
+  if (ogLocaleEl) ogLocaleEl.setAttribute("content", lang === "tr" ? "tr_TR" : "en_US");
 
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.dataset.i18n;

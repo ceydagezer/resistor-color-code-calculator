@@ -1,5 +1,6 @@
-```
 # Resistor Color Code Calculator
+
+🔗 **Live demo:** https://ceydagezer.github.io/resistor-color-code-calculator/
 
 A simple web application that calculates resistor values based on selected color bands.
 
@@ -68,4 +69,9 @@ AI tools were used for guidance and idea generation during parts of the developm
 Computer Engineering Student
 
 [GitHub Profile](https://github.com/ceydagezer)
-```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
